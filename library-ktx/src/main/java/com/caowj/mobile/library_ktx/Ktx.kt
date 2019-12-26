@@ -1,9 +1,13 @@
 package com.caowj.mobile.library_ktx
 
+import android.app.Application
 import android.content.ContentProvider
 import android.content.ContentValues
 import android.database.Cursor
 import android.net.Uri
+import androidx.lifecycle.ProcessLifecycleOwner
+import com.caowj.mobile.library_ktx.core.lifecycle.KtxAppLifeObserver
+import com.caowj.mobile.library_ktx.core.lifecycle.KtxLifeCycleCallBack
 
 /**
  * <pre>
@@ -14,9 +18,19 @@ import android.net.Uri
  */
 
 class Ktx : ContentProvider() {
-    override fun insert(uri: Uri, values: ContentValues?): Uri? {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    companion object {
+        lateinit var app: Application
+        var watchActivityLife = true
+        var watchAppLife = false
     }
+
+    private fun install(application: Application) {
+        app = application
+        if (watchActivityLife) application.registerActivityLifecycleCallbacks(KtxLifeCycleCallBack())
+        if (watchAppLife) ProcessLifecycleOwner.get().lifecycle.addObserver(KtxAppLifeObserver())
+    }
+
+    override fun insert(uri: Uri, values: ContentValues?): Uri? = null
 
     override fun query(
         uri: Uri,
@@ -24,28 +38,23 @@ class Ktx : ContentProvider() {
         selection: String?,
         selectionArgs: Array<out String>?,
         sortOrder: String?
-    ): Cursor? {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    ): Cursor? = null
 
     override fun onCreate(): Boolean {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        val application = context!!.applicationContext as Application
+        install(application)
+        return true
     }
+
 
     override fun update(
         uri: Uri,
         values: ContentValues?,
         selection: String?,
         selectionArgs: Array<out String>?
-    ): Int {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    ): Int = 0
 
-    override fun delete(uri: Uri, selection: String?, selectionArgs: Array<out String>?): Int {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    override fun delete(uri: Uri, selection: String?, selectionArgs: Array<out String>?): Int = 0
 
-    override fun getType(uri: Uri): String? {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    override fun getType(uri: Uri): String? = null
 }
