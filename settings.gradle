@@ -1,2 +1,2 @@
-include ':app', ':library-ktx'
+include ':app', ':library-ktx', ':mvvmcore'
 rootProject.name='WanAndroidKotlin'
